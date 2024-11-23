@@ -1,8 +1,12 @@
 export interface PaymentRequest {
-    email: string;
+  amount: number;
+  description: string;
+  currency?: string;
+  customer: {
     name: string;
+    email: string;
     phone: string;
-    amount: number;
-    description: string;
-  }
-  
+  };
+  redirectUrl?: string;
+  cancelUrl?: string;
+}

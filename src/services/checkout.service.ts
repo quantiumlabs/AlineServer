@@ -5,7 +5,13 @@ import { preference } from '../config/mercadopago';
 
 export const createCheckout = async (paymentData: PaymentRequest) => {
   const productId = uuidv4();
-  const { amount, description, email } = paymentData;
+  const { amount, description, customer } = paymentData;
+  const { email, name, phone } = customer || {};
+
+  // Validação dos campos obrigatórios
+  if (!email || !amount || !description) {
+    throw new Error('Missing required fields: email, amount, or description');
+  }
 
   const webhookUrl = process.env.NODE_ENV === 'production'
     ? 'https://alinenery.com.br/api/webhook'
@@ -38,11 +44,11 @@ export const createCheckout = async (paymentData: PaymentRequest) => {
     await prisma.payment.create({
       data: {
         id: productId,
-        email: paymentData.email,
-        name: paymentData.name,
-        phone: paymentData.phone,
-        amount: paymentData.amount,
-        description: paymentData.description,
+        email,
+        name,
+        phone,
+        amount,
+        description,
         status: 'pending',
       },
     });
