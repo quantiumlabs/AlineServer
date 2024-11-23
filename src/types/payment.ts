@@ -6,6 +6,7 @@ export interface PaymentRequest {
     name: string;
     email: string;
     phone: string;
+    company: string;
   };
   redirectUrl?: string;
   cancelUrl?: string;

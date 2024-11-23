@@ -8,10 +8,11 @@ export const createCheckout = async (paymentData: PaymentRequest) => {
   const { amount, description, customer } = paymentData;
   const { email, name, phone } = customer || {};
 
-  // Validação dos campos obrigatórios
-  if (!email || !amount || !description) {
-    throw new Error('Missing required fields: email, amount, or description');
-  }
+// Valide se os campos necessários estão presentes
+if (!email || !amount || !description) {
+  throw new Error('Missing required fields: email, amount, or description');
+}
+
 
   const webhookUrl = process.env.NODE_ENV === 'production'
     ? 'https://alinenery.com.br/api/webhook'
@@ -41,17 +42,6 @@ export const createCheckout = async (paymentData: PaymentRequest) => {
   try {
     const response = await preference.create({ body });
 
-    await prisma.payment.create({
-      data: {
-        id: productId,
-        email,
-        name,
-        phone,
-        amount,
-        description,
-        status: 'pending',
-      },
-    });
 
     return response.init_point;
   } catch (error) {
